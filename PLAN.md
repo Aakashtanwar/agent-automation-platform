@@ -2,7 +2,7 @@
 
 ## Context — read this first
 
-This plan is deliberately **different** from the grand blueprint. The full vision — a world-class, multi-tenant, India-first platform competing with n8n and Lindy — lives in the repo as [`PLAN.md`](./PLAN.md) and stays your **north star**. That is a funded-team, multi-year product.
+This plan is deliberately **different** from the grand blueprint. The full vision — a world-class, multi-tenant, India-first platform competing with n8n and Lindy — lives in the repo as [`VISION.md`](./VISION.md) and stays your **north star**. That is a funded-team, multi-year product.
 
 This document is what *you and I actually build together*. Throughout this doc, **"you" means Suraj** — the non-technical builder — and **"I" means Claude**, writing the code. It's shaped by the real constraints you told me:
 
@@ -11,7 +11,7 @@ This document is what *you and I actually build together*. Throughout this doc, 
 - **Budget:** a small amount for API usage / cheap hosting is OK. Your **$200 Claude subscription does NOT power the app** — an app that calls Claude needs a separate **Anthropic API key** (pay-per-use, billed separately). We'll start it with ~$5–10 of credit.
 - **Approach:** build the *real* platform, but in tiny achievable milestones. Each milestone produces something you can *see working* before we go further. We start with one agent doing one task on your own computer, and grow toward the vision.
 
-**Honest expectation-setting:** we are building a *learning prototype that becomes real over time*, not a launch-ready SaaS. Heavy production infrastructure from `PLAN.md` (Temporal, LiteLLM, Langfuse, Firecracker sandboxes, multi-tenancy, Kubernetes) is **deliberately deferred** — we add each piece only when a milestone actually needs it and you understand why.
+**Honest expectation-setting:** we are building a *learning prototype that becomes real over time*, not a launch-ready SaaS. Heavy production infrastructure from `VISION.md` (Temporal, LiteLLM, Langfuse, Firecracker sandboxes, multi-tenancy, Kubernetes) is **deliberately deferred** — we add each piece only when a milestone actually needs it and you understand why.
 
 ---
 
@@ -21,13 +21,13 @@ This document is what *you and I actually build together*. Throughout this doc, 
 |---|---|---|
 | **TypeScript** (one language) | The language for both the engine and, later, the visual web builder | One language for everything = less to learn. The visual canvas (React Flow) is JS-native anyway. |
 | **Anthropic TypeScript SDK** (`@anthropic-ai/sdk`) | Official library to call Claude | First-party, well-documented; we use its **tool runner** so the agent loop is handled for us. |
-| **Claude model: `claude-opus-4-8`** (default) | The model the agents think with | Most capable. **Cost note:** Opus is $5 in / $25 out per million tokens. For cheap learning/testing we can switch to **`claude-haiku-4-5`** ($1 / $5) or **`claude-sonnet-5`** ($3 / $15 — currently discounted to $2 / $10 through 2026-08-31). Your call — I'll default to Opus but flag when Haiku would save money. |
+| **Claude model: `claude-opus-4-8`** (default) | The model the agents think with | Most capable. **Cost note:** Opus is $5 in / $25 out per million tokens. For cheap learning/testing we can switch to **`claude-haiku-4-5`** ($1 / $5) or **`claude-sonnet-4-6`** ($3 / $15). Your call — I'll default to Opus but flag when Haiku would save money. |
 | **Tool runner + Zod** (`client.beta.messages.toolRunner`) | Auto-runs the "agent calls a tool → gets result → continues" loop | You don't have to hand-write the loop. Tools are plain typed functions defined with `betaZodTool` (from `@anthropic-ai/sdk/helpers/beta/zod`). *Note: the tool runner is a **beta** feature of the SDK — solid and documented, but its exact shape can shift between SDK versions. I'll pin the version so your code keeps working.* |
 | **MCP via the SDK** | How agents call external MCP servers | The SDK supports MCP two ways: a direct `mcp_servers` connector (beta), and helpers that convert an MCP server's tools into tools the runner can use. This is the "calling MCP" from your original goal. *Also a **beta** surface — same version-pinning caveat.* |
 | **Node + a simple local web app**, later **React Flow** | Runs on your computer first; visual builder comes later | See it in a browser without hosting costs; add the drag-and-drop canvas once the engine works. |
 | **A `.env` file for your API key** | Keeps your secret out of the code | Standard, safe, simple. |
 
-Everything here is a stepping stone *toward* the `PLAN.md` architecture — not a throwaway.
+Everything here is a stepping stone *toward* the `VISION.md` architecture — not a throwaway.
 
 ---
 
@@ -70,7 +70,7 @@ Add a hard **per-run spend cap** that stops a workflow if it exceeds, say, $0.50
 A minimal local web page where you type a goal, click "Run," and watch the agents work + see the cost. Teaches: turning the engine into something visual. *Cost: cents per run.*
 
 **Milestone 8 — The visual builder (first real taste of the product).**
-Introduce **React Flow**: drag nodes (Agent, Tool, Approval) onto a canvas, connect them, and run that workflow. This is the first version of the actual `PLAN.md` product — tiny, but real and yours. *Cost: cents per run.*
+Introduce **React Flow**: drag nodes (Agent, Tool, Approval) onto a canvas, connect them, and run that workflow. This is the first version of the actual `VISION.md` product — tiny, but real and yours. *Cost: cents per run.*
 
 After Milestone 8 we reassess: you'll understand enough to decide whether to keep growing it (memory, more integrations, saving workflows, cheap hosting so others can try it) toward the north-star vision — and by then you'll know if this is worth pursuing further.
 
@@ -78,7 +78,7 @@ After Milestone 8 we reassess: you'll understand enough to decide whether to kee
 
 ## What we are deliberately NOT building yet (and when we would)
 
-These are in `PLAN.md` but are wrong to tackle now — I'll flag the milestone that would justify each:
+These are in `VISION.md` but are wrong to tackle now — I'll flag the milestone that would justify each:
 
 - **Durable execution (Temporal), model gateway (LiteLLM), tracing (Langfuse), sandboxes, multi-tenancy, Kubernetes, WhatsApp Business, DPDP residency, SSO/RBAC.** All real, all later. We add any one of these *only* when a concrete milestone can't work without it — and I'll explain the tradeoff first.
 
@@ -106,10 +106,10 @@ These are in `PLAN.md` but are wrong to tackle now — I'll flag the milestone t
 1. I write all code and give you exact, copy-paste steps — one small step at a time.
 2. You run the step and tell me what you see (success or the exact error text).
 3. When something breaks, we debug it together; I never assume it worked.
-4. We keep the grand `PLAN.md` as the destination but judge every step by "can you see this working?"
+4. We keep the grand `VISION.md` as the destination but judge every step by "can you see this working?"
 
 ---
 
 ## Appendix — the north-star vision
 
-The full market + architecture blueprint (India-first, reliability-first, enterprise-grade) is preserved in the repo: [`PLAN.md`](./PLAN.md) and [`ARCHITECTURE-RESEARCH.md`](./ARCHITECTURE-RESEARCH.md) (with ~150 citations). Nothing here throws that away — this roadmap is the realistic path that *starts* walking toward it.
+The full market + architecture blueprint (India-first, reliability-first, enterprise-grade) is preserved in the repo: [`VISION.md`](./VISION.md) and [`ARCHITECTURE-RESEARCH.md`](./ARCHITECTURE-RESEARCH.md) (with ~150 citations). Nothing here throws that away — this roadmap is the realistic path that *starts* walking toward it.

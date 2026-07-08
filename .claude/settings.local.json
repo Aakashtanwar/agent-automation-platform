@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git rm *)",
+      "Bash(git mv *)",
+      "Bash(git -c 'user.name=Suraj Tanwar' -c user.email=a.s.tanwar01@gmail.com commit -q -m 'Consolidate to one roadmap: fix fabricated model \\(claude-sonnet-5 -> claude-sonnet-4-6\\), fix north-star refs to VISION.md, drop duplicate *)",
+      "Bash(git push *)"
+    ]
+  }
+}
