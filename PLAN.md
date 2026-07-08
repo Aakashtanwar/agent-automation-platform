@@ -2,9 +2,9 @@
 
 ## Context — read this first
 
-This plan is deliberately **different** from the grand blueprint. The full vision — a world-class, multi-tenant, India-first platform competing with n8n and Lindy — lives in the repo as [`VISION.md`](./VISION.md) and stays your **north star**. That is a funded-team, multi-year product.
+This plan is deliberately **different** from the grand blueprint. The full vision — a world-class, multi-tenant, India-first platform competing with n8n and Lindy — lives in the repo as [`PLAN.md`](./PLAN.md) and stays your **north star**. That is a funded-team, multi-year product.
 
-This document is what *you and I actually build together*, given the real constraints you told me:
+This document is what *you and I actually build together*. Throughout this doc, **"you" means Suraj** — the non-technical builder — and **"I" means Claude**, writing the code. It's shaped by the real constraints you told me:
 
 - **You** are non-technical but willing to follow clear step-by-step instructions and learn as you go.
 - **I** write 100% of the code. You run the steps I give you. I cannot touch your machine — you are my hands.
@@ -21,9 +21,9 @@ This document is what *you and I actually build together*, given the real constr
 |---|---|---|
 | **TypeScript** (one language) | The language for both the engine and, later, the visual web builder | One language for everything = less to learn. The visual canvas (React Flow) is JS-native anyway. |
 | **Anthropic TypeScript SDK** (`@anthropic-ai/sdk`) | Official library to call Claude | First-party, well-documented; we use its **tool runner** so the agent loop is handled for us. |
-| **Claude model: `claude-opus-4-8`** (default) | The model the agents think with | Most capable. **Cost note:** Opus is $5 in / $25 out per million tokens. For cheap learning/testing we can switch to **`claude-haiku-4-5`** ($1 / $5) or **`claude-sonnet-4-6`** ($3 / $15). Your call — I'll default to Opus but flag when Haiku would save money. |
-| **Tool runner + Zod** (`client.beta.messages.toolRunner`) | Auto-runs the "agent calls a tool → gets result → continues" loop | You don't have to hand-write the loop. Tools are plain typed functions. |
-| **MCP via the SDK** | How agents call external MCP servers | The SDK supports MCP directly (`mcp_servers` param + MCP helpers) — this is the "calling MCP" from your original goal. |
+| **Claude model: `claude-opus-4-8`** (default) | The model the agents think with | Most capable. **Cost note:** Opus is $5 in / $25 out per million tokens. For cheap learning/testing we can switch to **`claude-haiku-4-5`** ($1 / $5) or **`claude-sonnet-5`** ($3 / $15 — currently discounted to $2 / $10 through 2026-08-31). Your call — I'll default to Opus but flag when Haiku would save money. |
+| **Tool runner + Zod** (`client.beta.messages.toolRunner`) | Auto-runs the "agent calls a tool → gets result → continues" loop | You don't have to hand-write the loop. Tools are plain typed functions defined with `betaZodTool` (from `@anthropic-ai/sdk/helpers/beta/zod`). *Note: the tool runner is a **beta** feature of the SDK — solid and documented, but its exact shape can shift between SDK versions. I'll pin the version so your code keeps working.* |
+| **MCP via the SDK** | How agents call external MCP servers | The SDK supports MCP two ways: a direct `mcp_servers` connector (beta), and helpers that convert an MCP server's tools into tools the runner can use. This is the "calling MCP" from your original goal. *Also a **beta** surface — same version-pinning caveat.* |
 | **Node + a simple local web app**, later **React Flow** | Runs on your computer first; visual builder comes later | See it in a browser without hosting costs; add the drag-and-drop canvas once the engine works. |
 | **A `.env` file for your API key** | Keeps your secret out of the code | Standard, safe, simple. |
 
@@ -49,7 +49,7 @@ Goal: get your computer ready and prove Claude answers from code. I write everyt
 Each milestone = I write the code, you run it, you see a result, you learn one concept. We only move on when the current one works.
 
 **Milestone 1 — One agent, one tool.**
-A single agent (role/goal/instructions) that can call **one local tool** (e.g. "read today's date" or "do a calculation") using the tool runner. Teaches: what an "agent" and a "tool" actually are. *Cost: cents.*
+A single agent (role/goal/instructions) that can call **one local tool** (e.g. "read today's date" or "do a calculation") using the tool runner. Concretely, the first real code has the shape `client.beta.messages.toolRunner({ model, tools: [betaZodTool({ ... })], messages })` — that one call *is* the agent loop. Teaches: what an "agent" and a "tool" actually are. *Cost: cents.*
 
 **Milestone 2 — Agent calls a real API.**
 Give the agent a tool that hits a real external API (e.g. fetch weather, or read a Google Sheet). Teaches: how agents reach the outside world (the foundation of "calling APIs" from your goal). *Cost: cents.*
@@ -106,10 +106,10 @@ These are in `PLAN.md` but are wrong to tackle now — I'll flag the milestone t
 1. I write all code and give you exact, copy-paste steps — one small step at a time.
 2. You run the step and tell me what you see (success or the exact error text).
 3. When something breaks, we debug it together; I never assume it worked.
-4. We keep the grand `PLAN.md` as the destination but judge every step by "can Suraj see this working?"
+4. We keep the grand `PLAN.md` as the destination but judge every step by "can you see this working?"
 
 ---
 
 ## Appendix — the north-star vision
 
-The full market + architecture blueprint (India-first, reliability-first, enterprise-grade) is preserved in the repo: `VISION.md` and `ARCHITECTURE-RESEARCH.md` (with ~150 citations). Nothing here throws that away — this roadmap is the realistic path that *starts* walking toward it.
+The full market + architecture blueprint (India-first, reliability-first, enterprise-grade) is preserved in the repo: [`PLAN.md`](./PLAN.md) and [`ARCHITECTURE-RESEARCH.md`](./ARCHITECTURE-RESEARCH.md) (with ~150 citations). Nothing here throws that away — this roadmap is the realistic path that *starts* walking toward it.
