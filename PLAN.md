@@ -1,178 +1,115 @@
-# Blueprint + MVP Roadmap: A World-Class No/Low-Code Agentic Workflow Platform
+# Learn-by-Building Roadmap: Your Agentic Workflow Platform
 
-## Context
+## Context — read this first
 
-The goal is to build a platform companies use to visually assemble workflows in which **multiple dedicated AI agents perform a series of tasks to achieve a goal**, including calling MCP servers and external APIs — aimed at **non-technical business users** (no/low-code).
+This plan is deliberately **different** from the grand blueprint. The full vision — a world-class, multi-tenant, India-first platform competing with n8n and Lindy — lives in the repo as [`VISION.md`](./VISION.md) and stays your **north star**. That is a funded-team, multi-year product.
 
-Research (market + architecture + UX, 2025–2026) surfaced one decisive insight: this segment is **large and fast-growing (~$7–11B, ~45–50% CAGR) yet structurally underserved**. Every powerful incumbent (n8n, LangGraph, CrewAI, Copilot Studio, Agentforce, Workato) is really a developer/IT tool wearing a "no-code" label; every genuinely non-technical tool (Lindy, MindStudio, Cassidy, Dust) is weak on true visual multi-agent modeling, MCP, observability/debugging, or pricing transparency. Gartner predicts **>40% of agentic AI projects are canceled by end of 2027** — and the four failure modes driving that (reliability, opaque debugging, surprise cost, trust) are *exactly* the non-technical-user problems. The tooling that solves them (durable execution, tracing, evals, guardrails) exists today **only for developers.** That is the wedge.
+This document is what *you and I actually build together*, given the real constraints you told me:
 
-**Locked decisions:** (1) Deliverable = full blueprint + MVP roadmap. (2) GTM = **India-first, horizontal, reliability-first** — a general-purpose builder for **Indian SMB/mid-market** businesses, differentiated on reliability, plain-language observability (English + Indian languages), capped/transparent pricing, first-class human-in-the-loop, and **native Indian-language authoring** no English-first incumbent offers. (3) **Architect for enterprise governance from day one, but launch self-serve** (Indian SMB/mid-market cloud SaaS first; enterprise controls and India data-residency designed-in, enabled progressively).
+- **You** are non-technical but willing to follow clear step-by-step instructions and learn as you go.
+- **I** write 100% of the code. You run the steps I give you. I cannot touch your machine — you are my hands.
+- **Budget:** a small amount for API usage / cheap hosting is OK. Your **$200 Claude subscription does NOT power the app** — an app that calls Claude needs a separate **Anthropic API key** (pay-per-use, billed separately). We'll start it with ~$5–10 of credit.
+- **Approach:** build the *real* platform, but in tiny achievable milestones. Each milestone produces something you can *see working* before we go further. We start with one agent doing one task on your own computer, and grow toward the vision.
 
----
-
-## 1. Positioning & Differentiation
-
-**One-line positioning:** *"The agent workflow platform your business team can actually trust — build multi-agent workflows in plain language (Hindi or English), see exactly what every agent did, and never get a surprise bill."*
-
-**The spine is reliability.** Every competitor treats reliability as an afterthought in a capability arms race; we make it the product. The other four differentiators are not co-equal pillars — they are **how reliability becomes visible and usable to a non-technical Indian business user**:
-
-1. **Reliability *is* the product.** Deterministic graph backbone with autonomous agents as *bounded* nodes; durable execution underneath so runs survive crashes and resume. This is the spine; the four below are its expressions.
-2. **Reliability you can *see* — plain-language observability & debugging.** "Show your work" trace UX in business language (**English and Indian languages**) — what each agent decided and *why*, which tool it called, what it cost — not developer logs. (Best fragments today: Vellum traces, Gumloop cost UX; nobody has assembled it for non-technical users, let alone in Indic languages.)
-3. **Cost reliability — transparent, capped pricing.** A pre-run cost **range** (model × bounded step count) sets expectations; the **live cost badge + hard per-workflow/tenant caps that pause-and-ask** are the actual guarantee. (A precise pre-run number is impossible for variable-iteration agents — we are honest about the range and enforce the cap.) Directly counters the near-universal credit-opacity complaint (Lindy/Make/Relevance) and pricing cliffs (Beam $50→$3,990, Vellum $0→$500) — doubly a wedge for price-sensitive Indian SMBs.
-4. **Reliability via human checkpoints — HITL as a first-class, easy step.** Draft modes, one-click approvals via **WhatsApp** (dominant in India) / Slack / email, "start safe → grow autonomy" default. (38% of teams cite HITL as their #1 agent-management approach; only 20% run fully autonomous.)
-5. **Reliable connection — zero-setup MCP + India-relevant templates.** "Connect [App]" buttons (no terminal/JSON), plus job-to-be-done templates (GST/invoicing, WhatsApp lead-response, Tally/Zoho, UPI/Razorpay reconciliation) so first value lands in minutes, not hours.
-
-**Reference verdicts to beat:** activation → Lindy/Gumloop; guardrails → Zapier Agents; cost transparency → Gumloop/Vellum; "what did the agent decide" → Vellum; enterprise governance → Copilot Studio. **India-language authoring + traces: greenfield — no incumbent competes here.**
+**Honest expectation-setting:** we are building a *learning prototype that becomes real over time*, not a launch-ready SaaS. Heavy production infrastructure from `PLAN.md` (Temporal, LiteLLM, Langfuse, Firecracker sandboxes, multi-tenancy, Kubernetes) is **deliberately deferred** — we add each piece only when a milestone actually needs it and you understand why.
 
 ---
 
-## 2. Product / UX Blueprint (non-technical-first)
+## Tech choices (and why they fit a solo non-technical builder)
 
-Core UX principles the build must nail (each maps to a research-validated winning pattern):
-
-- **Lead with conversation, land on structure.** User describes the outcome in plain language — **English, Hindi, or code-mixed Hinglish** — → system generates an *editable, inspectable* visual workflow. Conversation drives activation; the visible graph builds trust. (Lindy 3.0, Gumloop "Gummie", Zapier Copilot are references.)
-- **Model agents the way businesses hire people** — **role / goal / instructions** (CrewAI mental model) as fill-in-the-blank fields with intent expansion, never a raw prompt box.
-- **Tools/MCP as a guided toggle**, not config. "If you can set up a Zap, you can connect a tool."
-- **"Show your work" trust engine** — visible tool calls, sources/citations, step traces **rendered in the user's language (English / Indic)**; surface *all* evaluated options, not just the chosen path.
-- **Free, zero-anxiety test/preview** — sandbox runs on sample data, single-node re-run, replay-from-prior-run.
-- **Safe-by-default guardrails, invisible until needed** — per-run step caps, spend caps with 75/90% alerts, loop termination, bounded retries — all on by default. PII redaction is **India-aware** (Aadhaar / PAN / UPI / Indian phone formats).
-- **JTBD template gallery + onboarding credits + form-based config** so a colleague can run an agent without ever opening the builder. Localized UI (Hindi + English at launch) and India-relevant starter templates.
-- **WhatsApp as a first-class channel** — trigger workflows from and route HITL approvals to WhatsApp Business, not only Slack/email, reflecting how Indian SMBs actually operate.
-
-**Visual builder = a graph of nodes.** Node palette exposes Anthropic's five workflow patterns as first-class primitives plus agent/tool/control nodes:
-`Prompt-chain · Router · Parallelize · Orchestrator-workers · Evaluator-optimizer · Agent(ReAct) · Tool/MCP · Human-in-the-loop · Context-compression · Knowledge(RAG)`. Advanced mode gates Swarm/Network patterns.
-
----
-
-## 3. Reference Architecture
-
-**Cross-cutting thesis:** *Deterministic graph backbone (reliability, auditability, learnable UX) + autonomous agents as bounded, guardrailed nodes + a durable-execution substrate underneath. Buy the integration/sandbox layers; own the graph engine and model gateway; stay standards-based (MCP spec, A2A, OTel GenAI, OWASP LLM Top 10) throughout.*
-
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│ L1 EXPERIENCE — Visual builder (canvas = graph). NL→workflow generation.   │
-│    Node palette (5 patterns + Agent/Tool/HITL/Context/RAG). "Connect App"  │
-│    OAuth buttons. Pre-run cost range + live cost badge + hard cap. Plain-   │
-│    language trace viewer (English/Indic). JTBD gallery. Form-based config.  │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L2 CONTROL PLANE — compile canvas → data-driven graph spec. Versioning ·   │
-│    eval-gate before publish · admin publish approval · ReBAC (users+agents) │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L3 DURABLE EXECUTION SUBSTRATE — Temporal (or Restate). Graph interpreter   │
-│    (graph=data). One durable session per run. Journaled LLM/MCP/API steps · │
-│    idempotency keys · retries/backoff · HITL waits (days) · budget ceilings │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L4 AGENT RUNTIME & MODEL LAYER — LiteLLM gateway (own the data path) ·      │
-│    auto prompt-caching · context engine (compaction/notes/sub-agents) ·     │
-│    Mem0 over pgvector · Pydantic+Instructor typed node I/O · RAG-as-tool     │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L5 TOOL / INTEGRATION LAYER — native MCP client (Streamable HTTP, OAuth 2.1,│
-│    SSRF-hardened) + Composio/Pipedream broker for instant catalog · Tool    │
-│    Registry + RAG-over-tools (meta-tools) · namespacing · MCP security scan  │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L6 EXECUTION SANDBOX POOL — E2B/Daytona (Firecracker), egress allow-lists.  │
-│    Secrets injected at creation, NEVER into LLM context (reference tokens).  │
-├──────────────────────────────────────────────────────────────────────────┤
-│ L7 CROSS-CUTTING — Observability: OTel GenAI → Langfuse | Evals: DeepEval/  │
-│    Promptfoo + online | Guardrails: NeMo (+Prompt Guard 2/Llama Guard 4/    │
-│    Presidio) | Secrets: KMS envelope + Vault | Tenancy: Postgres RLS bridge │
-│    + silo tier | Cost: per-tenant token accounting + hard budget/rate limits │
-└──────────────────────────────────────────────────────────────────────────┘
-```
-
-**Key architectural decisions & rationale:**
-
-| Area | Decision | Why |
+| Choice | What it is | Why |
 |---|---|---|
-| Execution model | **Cyclic graph / state-machine** (LangGraph-style), agent-in-a-node hybrid | DAGs can't loop; pure agent loops compound errors & cost ~10×. Canvas *is* a graph → per-node test, isolated errors, audit trail. Default to determinism; opt into autonomy node-by-node. |
-| Durable substrate | **Temporal** for v1 (Restate the strong alternative) | Checkpointing (LangGraph/CrewAI) ≠ durability; never build from scratch. The usual knock on Temporal — the **determinism-versioning tax** — is *neutralized here* because we compile the graph to a **data-driven interpreter**: workflow edits change *data*, not replayed code, so the interpreter code stays stable. With the tax removed, the choice reduces to **maturity, ecosystem depth, and battle-tested durable timers for days-long HITL waits → Temporal**. (The companion research doc leans Restate on latency/Virtual-Objects; we override for v1 on maturity.) **Revisit trigger:** if the interpreter proves complex or versioning-ops still bite, migrate to Restate — its Virtual-Object-per-session maps 1:1 to an agent session. ⚠️ The interpreter is **load-bearing** — it answers both the versioning-tax and the live-edit risks — so it must be proven in Phase 0, not assumed. |
-| Multi-agent | Supervisor + Sequential as defaults; Swarm/Network gated "advanced" | #1 failure mode is **context fragmentation** (Cognition + Anthropic agree). Auto-propagate upstream traces + offer a context-compression node. |
-| Protocols | **MCP** for tools (down), **A2A** for external agents (across) | Two clearly separated lanes; both now industry standards. MCP spec 2025-06-18 (Streamable HTTP, OAuth 2.1 + RFC 8707 audience binding). |
-| Model layer | **LiteLLM** self-hosted gateway; Anthropic/OpenAI/Bedrock/Vertex backends | Own the data path for multi-tenant budgets/guardrails; layered fallback; **gateway must forward `cache_control` untouched** (prompt caching is the biggest cost lever, ~10× on stable prefixes). Default to latest Claude models (Opus 4.8 / Sonnet 4.6 / Haiku 4.5) with routing by cost/latency **and Indic-language competence** (Claude handles Hindi + major Indic scripts well; the router treats multilingual quality as a first-class criterion). |
-| Integrations | **Buy** OAuth broker (Composio/Pipedream) for instant breadth; **build** native MCP client for custom servers | Instant catalog + safe per-tenant OAuth now; own the MCP path long-term. Tool Registry + RAG-over-tools (meta-tools) to scale past thousands of tools. |
-| Secrets | KMS envelope encryption + Vault; **secrets reach the sandbox, never the LLM context** | OWASP LLM02 — reference-token placeholders (`{{secret:x}}`) resolved by a trusted proxy after the LLM emits the call. |
-| Tenancy | **Bridge**: Postgres RLS pool for standard tenants + **silo tier** (dedicated DB/VPC/keys) for regulated | Enterprise-ready from day one without siloing everyone. Per-transaction tenant context under PgBouncer. **India data-residency (DPDP Act 2023):** region-pin standard tenants to an India region; the silo tier provides dedicated in-region infra for regulated customers. |
-| Authz | **ReBAC** (OpenFGA self-host / Permit.io managed) | Nested/shared multi-tenant workflow resources; agent effective permission = **intersection(user rights, agent capabilities)** (confused-deputy defense). |
-| Sandbox | Managed **E2B/Daytona** (Firecracker) + deny-by-default egress | Untrusted tool/code execution isolation without self-hosting Firecracker early. |
-| Observability | **OTel GenAI** wire format → **Langfuse** (self-host) | Backend-agnostic; agent/tool span trees map to the graph; native token/cost. |
-| Guardrails | **NeMo Guardrails** + Prompt Guard 2 / Llama Guard 4 / Presidio, non-bypassable orchestrator step | Anchor to OWASP LLM Top 10 2025 (injection, excessive agency, unbounded consumption). **India-aware PII:** extend Presidio with custom recognizers for **Aadhaar, PAN, UPI IDs, and Indian phone formats.** |
-| Evals | **DeepEval/Promptfoo** in CI + Langfuse online evals; **eval-gate before publish** | "Test your agent before you trust it" — unbuilt no-code whitespace. |
+| **TypeScript** (one language) | The language for both the engine and, later, the visual web builder | One language for everything = less to learn. The visual canvas (React Flow) is JS-native anyway. |
+| **Anthropic TypeScript SDK** (`@anthropic-ai/sdk`) | Official library to call Claude | First-party, well-documented; we use its **tool runner** so the agent loop is handled for us. |
+| **Claude model: `claude-opus-4-8`** (default) | The model the agents think with | Most capable. **Cost note:** Opus is $5 in / $25 out per million tokens. For cheap learning/testing we can switch to **`claude-haiku-4-5`** ($1 / $5) or **`claude-sonnet-4-6`** ($3 / $15). Your call — I'll default to Opus but flag when Haiku would save money. |
+| **Tool runner + Zod** (`client.beta.messages.toolRunner`) | Auto-runs the "agent calls a tool → gets result → continues" loop | You don't have to hand-write the loop. Tools are plain typed functions. |
+| **MCP via the SDK** | How agents call external MCP servers | The SDK supports MCP directly (`mcp_servers` param + MCP helpers) — this is the "calling MCP" from your original goal. |
+| **Node + a simple local web app**, later **React Flow** | Runs on your computer first; visual builder comes later | See it in a browser without hosting costs; add the drag-and-drop canvas once the engine works. |
+| **A `.env` file for your API key** | Keeps your secret out of the code | Standard, safe, simple. |
+
+Everything here is a stepping stone *toward* the `PLAN.md` architecture — not a throwaway.
 
 ---
 
-## 4. Recommended Tech Stack (concrete)
+## Phase A — Setup (one-time, guided; ~30–45 min)
 
-- **Frontend / builder:** TypeScript + React; **React Flow (@xyflow/react)** for the node canvas; Next.js app shell; Tailwind + shadcn/ui.
-- **Backend / control plane:** Python (FastAPI) for agent/LLM services; **Temporal** (Python/TS SDK) for the durable substrate; Postgres (+ RLS) as system-of-record; **pgvector** for memory/RAG v1; Redis for queues/cache.
-- **Agent/model:** **LiteLLM** gateway; **Pydantic + Instructor** for typed node I/O; **Mem0** for memory; LangGraph *patterns* as the mental model (engine compiled to data-driven interpreter over Temporal).
-- **Integrations:** **Composio** (or Pipedream Connect) broker + native MCP client (Streamable HTTP + OAuth 2.1).
-- **Sandbox:** **E2B** (or Daytona) managed Firecracker sandboxes.
-- **Cross-cutting:** OpenTelemetry GenAI → **Langfuse**; **NeMo Guardrails**; **OpenFGA** (ReBAC); **HashiCorp Vault** + cloud KMS.
-- **Infra:** Kubernetes with **KEDA/HPA on queue depth**; tier work by duration (fast inline → queue+worker → durable workflow).
+Goal: get your computer ready and prove Claude answers from code. I write everything; you run each step and paste me any errors.
 
-*(Stack is a strong default under "no constraint"; each choice has a named alternative in §3 if a team preference emerges.)*
+1. **Install the basics** (I'll give exact commands/links): **Node.js** (the runtime) and **VS Code** (the editor). On your Mac we'll check `node --version` works.
+2. **Get an Anthropic API key** — you sign up at the Anthropic Console, add **~$5–10 of credit**, and create an API key. *You* do this (it's a credential — I never handle it). We store it in a `.env` file.
+3. **Create the project** — I generate a tiny TypeScript project (`package.json`, `tsconfig.json`, one folder). You run `npm install`.
+4. **"Hello, Claude" test** — I write a ~15-line script that sends one message to Claude and prints the reply. You run it. **Cost: a fraction of a cent.**
 
----
-
-## 5. Phased Build Roadmap
-
-**Phase 0 — Foundations & spikes (validate the risky core).**
-De-risk the three hardest bets before UI polish: (a) compile a JSON graph spec → Temporal-executed **data-driven interpreter** with journaled LLM/MCP/API steps and resumable HITL waits; (b) native **MCP client** connecting to 2–3 real servers with OAuth; (c) **per-run cost accounting + hard budget cap** wired to LiteLLM span tokens. Stand up Postgres+RLS tenancy skeleton and OTel→Langfuse tracing.
-
-**Phase 1 — MVP (self-serve, reliability-first).** See §6.
-
-**Phase 2 — Trust & observability depth.** Plain-English trace viewer with "show all evaluated options," replay-from-prior-run, eval-gate before publish (DeepEval/Promptfoo), online evals on sampled prod traces, guardrail rails (NeMo + classifiers) as a non-bypassable step.
-
-**Phase 3 — Scale & catalog.** Composio broker for broad app catalog (India-relevant first: Zoho, Tally, payment/logistics APIs) + Tool Registry with RAG-over-tools; multi-agent Supervisor/Sequential templates; **additional Indic languages** (Bengali/Tamil/Telugu/Marathi/…); memory (Mem0) and RAG-as-tool node; sandbox pool for tool/code execution.
-
-**Phase 4 — Enterprise controls (progressively enabled).** SSO/SAML/SCIM, ReBAC roles + isolated workspaces, admin publish-approval gate, DLP defaults, audit logs (Purview-style), silo-tier deployment + data residency, A2A for external-agent interop.
+✅ **You'll see:** Claude replying in your terminal, powered by *your* key. That proves the whole foundation works.
 
 ---
 
-## 6. MVP Definition (Phase 1 — the smallest thing that proves the wedge)
+## Phase B — The milestone ladder (build the real thing, small step by small step)
 
-**Thesis to prove:** a non-technical **Indian business** user can build, test, trust, and run a *multi-agent* workflow **in their own language** — and never fear a surprise bill.
+Each milestone = I write the code, you run it, you see a result, you learn one concept. We only move on when the current one works.
 
-**In scope** (deliberately the floor — each item earns its place against the thesis):
-- Visual canvas (React Flow), **minimal node set only**: Trigger, Agent (role/goal/instructions), Tool/MCP call, Router, Human-in-the-loop approval, Output. *(Parallelize / Evaluator-optimizer / Swarm deliberately excluded — not needed to prove the wedge.)*
-- **NL → workflow** generation from **English, Hindi, or Hinglish** ("describe your workflow") producing an editable graph; **Hindi + English UI localization.**
-- **Agent node** = role/goal/instructions fields + toggle-attached tools; ReAct loop with a max-iterations guardrail.
-- **Sequential + one Supervisor** multi-agent pattern — the **minimum** that demonstrates "multiple dedicated agents achieving a goal." (One router-style Supervisor over ≥2 workers; no deeper hierarchy.)
-- **MCP + API calling** via native MCP client for **3–5 India-relevant marquee integrations** — **WhatsApp Business** + Google Sheets + Gmail + one of Razorpay/Tally — each behind a "Connect [App]" OAuth button.
-- **Durable execution** on Temporal: runs survive restarts, HITL pauses resume (including a **WhatsApp approval** step).
-- **Cost control:** pre-run cost **range** + live cost badge + **hard per-workflow budget cap that pauses-and-asks** (the cap, not the estimate, is the guarantee).
-- **"Show your work" run trace** in plain language **(English/Hindi)** — per-agent decision, tool call, cost — + free test runs on sample data.
-- **JTBD template gallery** (5–8 India-relevant starter workflows) + onboarding credits.
-- **Tenancy skeleton:** Postgres RLS, per-tenant secrets via KMS/Vault (never into LLM context), basic roles, **India region-pinning.**
+**Milestone 1 — One agent, one tool.**
+A single agent (role/goal/instructions) that can call **one local tool** (e.g. "read today's date" or "do a calculation") using the tool runner. Teaches: what an "agent" and a "tool" actually are. *Cost: cents.*
 
-**Out of scope for MVP (deferred):** Swarm/Network patterns, full eval-gate, sandboxed code execution, SSO/SCIM, silo deployment, A2A, RAG-over-thousands-of-tools, long-term memory, **Indic languages beyond Hindi+English** (Bengali/Tamil/Telugu/Marathi/etc. are fast-follows).
+**Milestone 2 — Agent calls a real API.**
+Give the agent a tool that hits a real external API (e.g. fetch weather, or read a Google Sheet). Teaches: how agents reach the outside world (the foundation of "calling APIs" from your goal). *Cost: cents.*
 
-**MVP success criteria (measurable — a recorded usability session passes or fails each):** a genuinely non-technical Indian-SMB tester, unaided, (1) describes a workflow in Hindi/Hinglish and gets a correct editable 2-agent graph; (2) connects a real integration (e.g. WhatsApp or Sheets) via OAuth and the agent calls it successfully; (3) sees the pre-run cost range, runs the workflow, and it **pauses at the budget cap** when forced over; (4) completes a **WhatsApp/Slack approval** step and the run resumes after a worker restart; (5) reads the trace and correctly explains, in their own words, what each agent decided — end to end, without help.
+**Milestone 3 — Two agents achieving a goal (your original example).**
+A **supervisor** agent that delegates to **worker** agents in sequence to complete a multi-step goal (e.g. "research a topic → draft a summary"). This is the literal thing you described: *multiple dedicated agents performing a series of tasks to achieve a goal.* Teaches: multi-agent orchestration. *Cost: a few cents per run.*
 
----
+**Milestone 4 — Human-in-the-loop.**
+Before the agent does something real (e.g. "send this"), it **pauses and asks you to approve** in the terminal. Teaches: the trust/safety pattern that's central to the vision. *Cost: cents.*
 
-## 7. Key Risks & Mitigations
+**Milestone 5 — Connect an MCP server.**
+Wire the agent to a real **MCP server** so it gains a whole toolset with no custom code. Teaches: the "calling MCP" half of your goal, and why MCP matters. *Cost: cents.*
 
-- **Reliability of autonomous nodes** → default to deterministic graph; bound every agent (max-iterations, budget, guardrails); auto-propagate context to fight fragmentation.
-- **Temporal determinism-versioning tax** (users constantly edit workflows) → compile graph to a *data-driven interpreter* (edits = data changes, not replayed code); keep Restate as a migration option.
-- **Cost blowups / runaway loops** → cost accounting from LLM span tokens, hard caps that pause-and-ask, loop detection, bounded retries — on by default.
-- **MCP/tool security** (tool poisoning, confused deputy, token passthrough) → pin+hash tool descriptions, per-client consent, RFC 8707 audience validation, SSRF-hardened OAuth discovery, secrets never in LLM context.
-- **"No-code that isn't"** (the n8n/Wordware trap) → relentless non-technical usability testing as a gate; NL-first authoring; forms over prompt boxes.
-- **Broad-then-shallow** → reliability-first horizontal wedge, but ship 5–8 deep **India-relevant** JTBD templates so first value is fast despite horizontal scope.
-- **India-localization is skin-deep** (translated UI over an English-only brain) → localize the *whole loop* — NL authoring, agent reasoning, and traces in-language, India-aware PII, WhatsApp-native HITL, DPDP residency — not just UI strings.
+**Milestone 6 — A cost guardrail.**
+Add a hard **per-run spend cap** that stops a workflow if it exceeds, say, $0.50 — plus printing the cost of every run. Teaches: the "no surprise bill" differentiator, made real and simple. *Cost: negligible.*
+
+**Milestone 7 — See it in a browser (first UI).**
+A minimal local web page where you type a goal, click "Run," and watch the agents work + see the cost. Teaches: turning the engine into something visual. *Cost: cents per run.*
+
+**Milestone 8 — The visual builder (first real taste of the product).**
+Introduce **React Flow**: drag nodes (Agent, Tool, Approval) onto a canvas, connect them, and run that workflow. This is the first version of the actual `PLAN.md` product — tiny, but real and yours. *Cost: cents per run.*
+
+After Milestone 8 we reassess: you'll understand enough to decide whether to keep growing it (memory, more integrations, saving workflows, cheap hosting so others can try it) toward the north-star vision — and by then you'll know if this is worth pursuing further.
 
 ---
 
-## 8. Verification
+## What we are deliberately NOT building yet (and when we would)
 
-Because this is a greenfield build, verification is defined per phase:
+These are in `PLAN.md` but are wrong to tackle now — I'll flag the milestone that would justify each:
 
-- **Phase 0 spikes:** a scripted end-to-end test that (1) submits a JSON graph, kills the worker mid-run, and confirms Temporal resumes to completion; (2) connects the MCP client to a live server and executes a tool with OAuth; (3) asserts a run halts when the budget cap is hit. Traces appear in Langfuse.
-- **MVP:** the §6 success-criteria walkthrough run by a genuinely non-technical **Indian-SMB** tester **in Hindi/Hinglish** (usability session, recorded), plus an automated integration test covering build → test-run → **WhatsApp approval** → completion → trace, and a cost-cap enforcement test. Assert traces and NL authoring render correctly in Hindi and that India-aware PII (Aadhaar/PAN/UPI) is redacted.
-- **Ongoing:** every published workflow runs an eval suite before promotion (Phase 2+); guardrail rails are exercised by red-team prompts (Promptfoo) in CI.
+- **Durable execution (Temporal), model gateway (LiteLLM), tracing (Langfuse), sandboxes, multi-tenancy, Kubernetes, WhatsApp Business, DPDP residency, SSO/RBAC.** All real, all later. We add any one of these *only* when a concrete milestone can't work without it — and I'll explain the tradeoff first.
 
 ---
 
-## Appendix — Full research sources
+## Cost — the honest picture
 
-Detailed reference architecture with ~150 inline citations (Anthropic, OpenAI, LangGraph, Temporal/Restate/Inngest, MCP spec 2025-06-18, Cognition, OWASP LLM Top 10, OTel GenAI, AWS SaaS Lens, and vendor docs) lives beside this plan in [`ARCHITECTURE-RESEARCH.md`](./ARCHITECTURE-RESEARCH.md). Competitive/market and UX findings are synthesized inline in §1–§2 above.
+- **Development/testing:** cents to a few dollars total across all milestones, if we use Haiku/Sonnet for routine testing. Opus runs cost more; I'll tell you before anything pricey.
+- **Your $200 Claude subscription:** pays for *us working here in Claude Code*. It does **not** pay for the app's Claude calls — those come from your Anthropic API credit.
+- **Hosting:** $0 while everything runs on your computer. Only when you want *other people* to use it do we discuss cheap hosting (a few $/month).
+- **Guardrail:** Milestone 6 builds a hard spend cap so a runaway workflow can't surprise you.
+
+---
+
+## Verification (how we know each step actually works)
+
+- **Phase A:** `node --version` prints a version; the "Hello, Claude" script prints a real reply using your key.
+- **Every milestone:** you run the milestone's command and *see the described result* (an agent answering, two agents completing a goal, an approval prompt, a cost printout, a workflow running in the browser). If it errors, you paste me the error and I fix it — that's the loop.
+- **No milestone is "done" on my say-so** — it's done when *you* see it work on your screen.
+
+---
+
+## How we work together (the ground rules)
+
+1. I write all code and give you exact, copy-paste steps — one small step at a time.
+2. You run the step and tell me what you see (success or the exact error text).
+3. When something breaks, we debug it together; I never assume it worked.
+4. We keep the grand `PLAN.md` as the destination but judge every step by "can Suraj see this working?"
+
+---
+
+## Appendix — the north-star vision
+
+The full market + architecture blueprint (India-first, reliability-first, enterprise-grade) is preserved in the repo: `VISION.md` and `ARCHITECTURE-RESEARCH.md` (with ~150 citations). Nothing here throws that away — this roadmap is the realistic path that *starts* walking toward it.
