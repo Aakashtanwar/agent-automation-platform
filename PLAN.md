@@ -6,23 +6,23 @@ The goal is to build a platform companies use to visually assemble workflows in 
 
 Research (market + architecture + UX, 2025–2026) surfaced one decisive insight: this segment is **large and fast-growing (~$7–11B, ~45–50% CAGR) yet structurally underserved**. Every powerful incumbent (n8n, LangGraph, CrewAI, Copilot Studio, Agentforce, Workato) is really a developer/IT tool wearing a "no-code" label; every genuinely non-technical tool (Lindy, MindStudio, Cassidy, Dust) is weak on true visual multi-agent modeling, MCP, observability/debugging, or pricing transparency. Gartner predicts **>40% of agentic AI projects are canceled by end of 2027** — and the four failure modes driving that (reliability, opaque debugging, surprise cost, trust) are *exactly* the non-technical-user problems. The tooling that solves them (durable execution, tracing, evals, guardrails) exists today **only for developers.** That is the wedge.
 
-**Locked decisions:** (1) Deliverable = full blueprint + MVP roadmap. (2) GTM = **horizontal, reliability-first** — general-purpose builder differentiated on reliability, plain-English observability, capped/transparent pricing, and first-class human-in-the-loop. (3) **Architect for enterprise governance from day one, but launch self-serve** (SMB/mid-market cloud SaaS first; enterprise controls designed-in, enabled progressively).
+**Locked decisions:** (1) Deliverable = full blueprint + MVP roadmap. (2) GTM = **India-first, horizontal, reliability-first** — a general-purpose builder for **Indian SMB/mid-market** businesses, differentiated on reliability, plain-language observability (English + Indian languages), capped/transparent pricing, first-class human-in-the-loop, and **native Indian-language authoring** no English-first incumbent offers. (3) **Architect for enterprise governance from day one, but launch self-serve** (Indian SMB/mid-market cloud SaaS first; enterprise controls and India data-residency designed-in, enabled progressively).
 
 ---
 
 ## 1. Positioning & Differentiation
 
-**One-line positioning:** *"The agent workflow platform your business team can actually trust — build multi-agent workflows in plain English, see exactly what every agent did, and never get a surprise bill."*
+**One-line positioning:** *"The agent workflow platform your business team can actually trust — build multi-agent workflows in plain language (Hindi or English), see exactly what every agent did, and never get a surprise bill."*
 
-The five differentiators are the **core product**, not add-ons (every competitor treats them as afterthoughts):
+**The spine is reliability.** Every competitor treats reliability as an afterthought in a capability arms race; we make it the product. The other four differentiators are not co-equal pillars — they are **how reliability becomes visible and usable to a non-technical Indian business user**:
 
-1. **Reliability as the product.** Deterministic graph backbone with autonomous agents as *bounded* nodes; durable execution underneath so runs survive crashes and resume. Counter to the "capability over reliability" arms race users are tired of.
-2. **Plain-English observability & debugging.** "Show your work" trace UX in business language — what each agent decided and *why*, which tool it called, what it cost — not developer logs. (Best fragments today: Vellum traces, Gumloop cost UX; nobody has assembled it for non-technical users.)
-3. **Transparent, capped pricing.** Per-run cost *estimate before you run*, live cost badge, hard per-workflow/tenant budget caps that pause-and-ask. Directly counters the near-universal credit-opacity complaint (Lindy/Make/Relevance) and pricing cliffs (Beam $50→$3,990, Vellum $0→$500).
-4. **Human-in-the-loop as a first-class, easy step.** Draft modes, one-click approvals via Slack/email, "start safe → grow autonomy" default. (38% of teams cite HITL as their #1 agent-management approach; only 20% run fully autonomous.)
-5. **Zero-setup MCP + vertical templates.** "Connect [App]" buttons (no terminal/JSON), plus job-to-be-done templates so first value lands in minutes, not hours.
+1. **Reliability *is* the product.** Deterministic graph backbone with autonomous agents as *bounded* nodes; durable execution underneath so runs survive crashes and resume. This is the spine; the four below are its expressions.
+2. **Reliability you can *see* — plain-language observability & debugging.** "Show your work" trace UX in business language (**English and Indian languages**) — what each agent decided and *why*, which tool it called, what it cost — not developer logs. (Best fragments today: Vellum traces, Gumloop cost UX; nobody has assembled it for non-technical users, let alone in Indic languages.)
+3. **Cost reliability — transparent, capped pricing.** A pre-run cost **range** (model × bounded step count) sets expectations; the **live cost badge + hard per-workflow/tenant caps that pause-and-ask** are the actual guarantee. (A precise pre-run number is impossible for variable-iteration agents — we are honest about the range and enforce the cap.) Directly counters the near-universal credit-opacity complaint (Lindy/Make/Relevance) and pricing cliffs (Beam $50→$3,990, Vellum $0→$500) — doubly a wedge for price-sensitive Indian SMBs.
+4. **Reliability via human checkpoints — HITL as a first-class, easy step.** Draft modes, one-click approvals via **WhatsApp** (dominant in India) / Slack / email, "start safe → grow autonomy" default. (38% of teams cite HITL as their #1 agent-management approach; only 20% run fully autonomous.)
+5. **Reliable connection — zero-setup MCP + India-relevant templates.** "Connect [App]" buttons (no terminal/JSON), plus job-to-be-done templates (GST/invoicing, WhatsApp lead-response, Tally/Zoho, UPI/Razorpay reconciliation) so first value lands in minutes, not hours.
 
-**Reference verdicts to beat:** activation → Lindy/Gumloop; guardrails → Zapier Agents; cost transparency → Gumloop/Vellum; "what did the agent decide" → Vellum; enterprise governance → Copilot Studio.
+**Reference verdicts to beat:** activation → Lindy/Gumloop; guardrails → Zapier Agents; cost transparency → Gumloop/Vellum; "what did the agent decide" → Vellum; enterprise governance → Copilot Studio. **India-language authoring + traces: greenfield — no incumbent competes here.**
 
 ---
 
@@ -30,13 +30,14 @@ The five differentiators are the **core product**, not add-ons (every competitor
 
 Core UX principles the build must nail (each maps to a research-validated winning pattern):
 
-- **Lead with conversation, land on structure.** User describes the outcome in plain English → system generates an *editable, inspectable* visual workflow. Conversation drives activation; the visible graph builds trust. (Lindy 3.0, Gumloop "Gummie", Zapier Copilot are references.)
+- **Lead with conversation, land on structure.** User describes the outcome in plain language — **English, Hindi, or code-mixed Hinglish** — → system generates an *editable, inspectable* visual workflow. Conversation drives activation; the visible graph builds trust. (Lindy 3.0, Gumloop "Gummie", Zapier Copilot are references.)
 - **Model agents the way businesses hire people** — **role / goal / instructions** (CrewAI mental model) as fill-in-the-blank fields with intent expansion, never a raw prompt box.
 - **Tools/MCP as a guided toggle**, not config. "If you can set up a Zap, you can connect a tool."
-- **"Show your work" trust engine** — visible tool calls, sources/citations, step traces; surface *all* evaluated options, not just the chosen path.
+- **"Show your work" trust engine** — visible tool calls, sources/citations, step traces **rendered in the user's language (English / Indic)**; surface *all* evaluated options, not just the chosen path.
 - **Free, zero-anxiety test/preview** — sandbox runs on sample data, single-node re-run, replay-from-prior-run.
-- **Safe-by-default guardrails, invisible until needed** — per-run step caps, spend caps with 75/90% alerts, loop termination, bounded retries — all on by default.
-- **JTBD template gallery + onboarding credits + form-based config** so a colleague can run an agent without ever opening the builder.
+- **Safe-by-default guardrails, invisible until needed** — per-run step caps, spend caps with 75/90% alerts, loop termination, bounded retries — all on by default. PII redaction is **India-aware** (Aadhaar / PAN / UPI / Indian phone formats).
+- **JTBD template gallery + onboarding credits + form-based config** so a colleague can run an agent without ever opening the builder. Localized UI (Hindi + English at launch) and India-relevant starter templates.
+- **WhatsApp as a first-class channel** — trigger workflows from and route HITL approvals to WhatsApp Business, not only Slack/email, reflecting how Indian SMBs actually operate.
 
 **Visual builder = a graph of nodes.** Node palette exposes Anthropic's five workflow patterns as first-class primitives plus agent/tool/control nodes:
 `Prompt-chain · Router · Parallelize · Orchestrator-workers · Evaluator-optimizer · Agent(ReAct) · Tool/MCP · Human-in-the-loop · Context-compression · Knowledge(RAG)`. Advanced mode gates Swarm/Network patterns.
@@ -51,8 +52,8 @@ Core UX principles the build must nail (each maps to a research-validated winnin
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ L1 EXPERIENCE — Visual builder (canvas = graph). NL→workflow generation.   │
 │    Node palette (5 patterns + Agent/Tool/HITL/Context/RAG). "Connect App"  │
-│    OAuth buttons. Per-run cost estimate + live cost badge. Plain-English    │
-│    trace viewer. JTBD template gallery. Form-based end-user config.         │
+│    OAuth buttons. Pre-run cost range + live cost badge + hard cap. Plain-   │
+│    language trace viewer (English/Indic). JTBD gallery. Form-based config.  │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ L2 CONTROL PLANE — compile canvas → data-driven graph spec. Versioning ·   │
 │    eval-gate before publish · admin publish approval · ReBAC (users+agents) │
@@ -84,17 +85,17 @@ Core UX principles the build must nail (each maps to a research-validated winnin
 | Area | Decision | Why |
 |---|---|---|
 | Execution model | **Cyclic graph / state-machine** (LangGraph-style), agent-in-a-node hybrid | DAGs can't loop; pure agent loops compound errors & cost ~10×. Canvas *is* a graph → per-node test, isolated errors, audit trail. Default to determinism; opt into autonomy node-by-node. |
-| Durable substrate | **Temporal** for v1 (Restate as the strong alternative) | Checkpointing (LangGraph/CrewAI) ≠ durability. Never build from scratch. Temporal = most battle-tested (accept determinism-versioning tax by compiling graph→**data-driven interpreter** so edits change *data*, not replayed code). Restate avoids the versioning tax + Virtual-Object-per-session — revisit if versioning ops hurt. |
+| Durable substrate | **Temporal** for v1 (Restate the strong alternative) | Checkpointing (LangGraph/CrewAI) ≠ durability; never build from scratch. The usual knock on Temporal — the **determinism-versioning tax** — is *neutralized here* because we compile the graph to a **data-driven interpreter**: workflow edits change *data*, not replayed code, so the interpreter code stays stable. With the tax removed, the choice reduces to **maturity, ecosystem depth, and battle-tested durable timers for days-long HITL waits → Temporal**. (The companion research doc leans Restate on latency/Virtual-Objects; we override for v1 on maturity.) **Revisit trigger:** if the interpreter proves complex or versioning-ops still bite, migrate to Restate — its Virtual-Object-per-session maps 1:1 to an agent session. ⚠️ The interpreter is **load-bearing** — it answers both the versioning-tax and the live-edit risks — so it must be proven in Phase 0, not assumed. |
 | Multi-agent | Supervisor + Sequential as defaults; Swarm/Network gated "advanced" | #1 failure mode is **context fragmentation** (Cognition + Anthropic agree). Auto-propagate upstream traces + offer a context-compression node. |
 | Protocols | **MCP** for tools (down), **A2A** for external agents (across) | Two clearly separated lanes; both now industry standards. MCP spec 2025-06-18 (Streamable HTTP, OAuth 2.1 + RFC 8707 audience binding). |
-| Model layer | **LiteLLM** self-hosted gateway; Anthropic/OpenAI/Bedrock/Vertex backends | Own the data path for multi-tenant budgets/guardrails; layered fallback; **gateway must forward `cache_control` untouched** (prompt caching is the biggest cost lever, ~10× on stable prefixes). Default to latest Claude models (Opus 4.8 / Sonnet 4.6 / Haiku 4.5) with routing by cost/latency. |
+| Model layer | **LiteLLM** self-hosted gateway; Anthropic/OpenAI/Bedrock/Vertex backends | Own the data path for multi-tenant budgets/guardrails; layered fallback; **gateway must forward `cache_control` untouched** (prompt caching is the biggest cost lever, ~10× on stable prefixes). Default to latest Claude models (Opus 4.8 / Sonnet 4.6 / Haiku 4.5) with routing by cost/latency **and Indic-language competence** (Claude handles Hindi + major Indic scripts well; the router treats multilingual quality as a first-class criterion). |
 | Integrations | **Buy** OAuth broker (Composio/Pipedream) for instant breadth; **build** native MCP client for custom servers | Instant catalog + safe per-tenant OAuth now; own the MCP path long-term. Tool Registry + RAG-over-tools (meta-tools) to scale past thousands of tools. |
 | Secrets | KMS envelope encryption + Vault; **secrets reach the sandbox, never the LLM context** | OWASP LLM02 — reference-token placeholders (`{{secret:x}}`) resolved by a trusted proxy after the LLM emits the call. |
-| Tenancy | **Bridge**: Postgres RLS pool for standard tenants + **silo tier** (dedicated DB/VPC/keys) for regulated | Enterprise-ready from day one without siloing everyone. Per-transaction tenant context under PgBouncer. |
+| Tenancy | **Bridge**: Postgres RLS pool for standard tenants + **silo tier** (dedicated DB/VPC/keys) for regulated | Enterprise-ready from day one without siloing everyone. Per-transaction tenant context under PgBouncer. **India data-residency (DPDP Act 2023):** region-pin standard tenants to an India region; the silo tier provides dedicated in-region infra for regulated customers. |
 | Authz | **ReBAC** (OpenFGA self-host / Permit.io managed) | Nested/shared multi-tenant workflow resources; agent effective permission = **intersection(user rights, agent capabilities)** (confused-deputy defense). |
 | Sandbox | Managed **E2B/Daytona** (Firecracker) + deny-by-default egress | Untrusted tool/code execution isolation without self-hosting Firecracker early. |
 | Observability | **OTel GenAI** wire format → **Langfuse** (self-host) | Backend-agnostic; agent/tool span trees map to the graph; native token/cost. |
-| Guardrails | **NeMo Guardrails** + Prompt Guard 2 / Llama Guard 4 / Presidio, non-bypassable orchestrator step | Anchor to OWASP LLM Top 10 2025 (injection, excessive agency, unbounded consumption). |
+| Guardrails | **NeMo Guardrails** + Prompt Guard 2 / Llama Guard 4 / Presidio, non-bypassable orchestrator step | Anchor to OWASP LLM Top 10 2025 (injection, excessive agency, unbounded consumption). **India-aware PII:** extend Presidio with custom recognizers for **Aadhaar, PAN, UPI IDs, and Indian phone formats.** |
 | Evals | **DeepEval/Promptfoo** in CI + Langfuse online evals; **eval-gate before publish** | "Test your agent before you trust it" — unbuilt no-code whitespace. |
 
 ---
@@ -122,7 +123,7 @@ De-risk the three hardest bets before UI polish: (a) compile a JSON graph spec �
 
 **Phase 2 — Trust & observability depth.** Plain-English trace viewer with "show all evaluated options," replay-from-prior-run, eval-gate before publish (DeepEval/Promptfoo), online evals on sampled prod traces, guardrail rails (NeMo + classifiers) as a non-bypassable step.
 
-**Phase 3 — Scale & catalog.** Composio broker for broad app catalog + Tool Registry with RAG-over-tools; multi-agent Supervisor/Sequential templates; memory (Mem0) and RAG-as-tool node; sandbox pool for tool/code execution.
+**Phase 3 — Scale & catalog.** Composio broker for broad app catalog (India-relevant first: Zoho, Tally, payment/logistics APIs) + Tool Registry with RAG-over-tools; multi-agent Supervisor/Sequential templates; **additional Indic languages** (Bengali/Tamil/Telugu/Marathi/…); memory (Mem0) and RAG-as-tool node; sandbox pool for tool/code execution.
 
 **Phase 4 — Enterprise controls (progressively enabled).** SSO/SAML/SCIM, ReBAC roles + isolated workspaces, admin publish-approval gate, DLP defaults, audit logs (Purview-style), silo-tier deployment + data residency, A2A for external-agent interop.
 
@@ -130,23 +131,23 @@ De-risk the three hardest bets before UI polish: (a) compile a JSON graph spec �
 
 ## 6. MVP Definition (Phase 1 — the smallest thing that proves the wedge)
 
-**Thesis to prove:** a non-technical user can build, test, trust, and run a *multi-agent* workflow — and never fear a surprise bill.
+**Thesis to prove:** a non-technical **Indian business** user can build, test, trust, and run a *multi-agent* workflow **in their own language** — and never fear a surprise bill.
 
-**In scope:**
-- Visual canvas (React Flow) with a **minimal node set**: Trigger, Agent (role/goal/instructions), Tool/MCP call, Router, Human-in-the-loop approval, Output.
-- **NL → workflow** generation ("describe your workflow") producing an editable graph.
-- **Agent node** = role/goal/instructions fields + toggle-attached tools; ReAct loop with max-iterations guardrail.
-- **Sequential + one Supervisor** multi-agent pattern (enough to demonstrate "multiple dedicated agents achieving a goal").
-- **MCP + API calling** via native MCP client for 3–5 marquee integrations (e.g. Gmail/Slack/HTTP/Google Sheets) with "Connect [App]" OAuth.
-- **Durable execution** on Temporal: runs survive restarts, HITL pauses resume.
-- **Cost estimate before run + live cost badge + hard per-workflow budget cap** that pauses-and-asks.
-- **"Show your work" run trace** in plain language (per-agent decision, tool call, cost) + free test runs on sample data.
-- **JTBD template gallery** (5–8 starter workflows) + onboarding credits.
-- **Tenancy skeleton**: Postgres RLS, per-tenant secrets via KMS/Vault (never into LLM context), basic roles.
+**In scope** (deliberately the floor — each item earns its place against the thesis):
+- Visual canvas (React Flow), **minimal node set only**: Trigger, Agent (role/goal/instructions), Tool/MCP call, Router, Human-in-the-loop approval, Output. *(Parallelize / Evaluator-optimizer / Swarm deliberately excluded — not needed to prove the wedge.)*
+- **NL → workflow** generation from **English, Hindi, or Hinglish** ("describe your workflow") producing an editable graph; **Hindi + English UI localization.**
+- **Agent node** = role/goal/instructions fields + toggle-attached tools; ReAct loop with a max-iterations guardrail.
+- **Sequential + one Supervisor** multi-agent pattern — the **minimum** that demonstrates "multiple dedicated agents achieving a goal." (One router-style Supervisor over ≥2 workers; no deeper hierarchy.)
+- **MCP + API calling** via native MCP client for **3–5 India-relevant marquee integrations** — **WhatsApp Business** + Google Sheets + Gmail + one of Razorpay/Tally — each behind a "Connect [App]" OAuth button.
+- **Durable execution** on Temporal: runs survive restarts, HITL pauses resume (including a **WhatsApp approval** step).
+- **Cost control:** pre-run cost **range** + live cost badge + **hard per-workflow budget cap that pauses-and-asks** (the cap, not the estimate, is the guarantee).
+- **"Show your work" run trace** in plain language **(English/Hindi)** — per-agent decision, tool call, cost — + free test runs on sample data.
+- **JTBD template gallery** (5–8 India-relevant starter workflows) + onboarding credits.
+- **Tenancy skeleton:** Postgres RLS, per-tenant secrets via KMS/Vault (never into LLM context), basic roles, **India region-pinning.**
 
-**Out of scope for MVP (deferred):** Swarm/Network patterns, full eval-gate, sandboxed code execution, SSO/SCIM, silo deployment, A2A, RAG-over-thousands-of-tools, long-term memory.
+**Out of scope for MVP (deferred):** Swarm/Network patterns, full eval-gate, sandboxed code execution, SSO/SCIM, silo deployment, A2A, RAG-over-thousands-of-tools, long-term memory, **Indic languages beyond Hindi+English** (Bengali/Tamil/Telugu/Marathi/etc. are fast-follows).
 
-**MVP success criteria:** a non-technical tester builds a 2-agent workflow that calls a real MCP/API, sees the cost before running, runs it with an approval step, and understands from the trace what each agent did — end to end, without help.
+**MVP success criteria (measurable — a recorded usability session passes or fails each):** a genuinely non-technical Indian-SMB tester, unaided, (1) describes a workflow in Hindi/Hinglish and gets a correct editable 2-agent graph; (2) connects a real integration (e.g. WhatsApp or Sheets) via OAuth and the agent calls it successfully; (3) sees the pre-run cost range, runs the workflow, and it **pauses at the budget cap** when forced over; (4) completes a **WhatsApp/Slack approval** step and the run resumes after a worker restart; (5) reads the trace and correctly explains, in their own words, what each agent decided — end to end, without help.
 
 ---
 
@@ -157,7 +158,8 @@ De-risk the three hardest bets before UI polish: (a) compile a JSON graph spec �
 - **Cost blowups / runaway loops** → cost accounting from LLM span tokens, hard caps that pause-and-ask, loop detection, bounded retries — on by default.
 - **MCP/tool security** (tool poisoning, confused deputy, token passthrough) → pin+hash tool descriptions, per-client consent, RFC 8707 audience validation, SSRF-hardened OAuth discovery, secrets never in LLM context.
 - **"No-code that isn't"** (the n8n/Wordware trap) → relentless non-technical usability testing as a gate; NL-first authoring; forms over prompt boxes.
-- **Broad-then-shallow** → reliability-first horizontal wedge, but ship 5–8 deep JTBD templates so first value is fast despite horizontal scope.
+- **Broad-then-shallow** → reliability-first horizontal wedge, but ship 5–8 deep **India-relevant** JTBD templates so first value is fast despite horizontal scope.
+- **India-localization is skin-deep** (translated UI over an English-only brain) → localize the *whole loop* — NL authoring, agent reasoning, and traces in-language, India-aware PII, WhatsApp-native HITL, DPDP residency — not just UI strings.
 
 ---
 
@@ -166,11 +168,11 @@ De-risk the three hardest bets before UI polish: (a) compile a JSON graph spec �
 Because this is a greenfield build, verification is defined per phase:
 
 - **Phase 0 spikes:** a scripted end-to-end test that (1) submits a JSON graph, kills the worker mid-run, and confirms Temporal resumes to completion; (2) connects the MCP client to a live server and executes a tool with OAuth; (3) asserts a run halts when the budget cap is hit. Traces appear in Langfuse.
-- **MVP:** the §6 success-criteria walkthrough run by a genuinely non-technical tester (usability session, recorded), plus an automated integration test covering build → test-run → approval → completion → trace, and a cost-cap enforcement test.
+- **MVP:** the §6 success-criteria walkthrough run by a genuinely non-technical **Indian-SMB** tester **in Hindi/Hinglish** (usability session, recorded), plus an automated integration test covering build → test-run → **WhatsApp approval** → completion → trace, and a cost-cap enforcement test. Assert traces and NL authoring render correctly in Hindi and that India-aware PII (Aadhaar/PAN/UPI) is redacted.
 - **Ongoing:** every published workflow runs an eval suite before promotion (Phase 2+); guardrail rails are exercised by red-team prompts (Promptfoo) in CI.
 
 ---
 
 ## Appendix — Full research sources
 
-Detailed reference architecture with ~150 inline citations (Anthropic, OpenAI, LangGraph, Temporal/Restate/Inngest, MCP spec 2025-06-18, Cognition, OWASP LLM Top 10, OTel GenAI, AWS SaaS Lens, and vendor docs): `/Users/surajtanwar/.claude/plans/go-in-a-complete-peaceful-sky-agent-a666323656f0d344c.md`. Competitive/market and UX findings are synthesized inline in §1–§2 above.
+Detailed reference architecture with ~150 inline citations (Anthropic, OpenAI, LangGraph, Temporal/Restate/Inngest, MCP spec 2025-06-18, Cognition, OWASP LLM Top 10, OTel GenAI, AWS SaaS Lens, and vendor docs) lives beside this plan in [`ARCHITECTURE-RESEARCH.md`](./ARCHITECTURE-RESEARCH.md). Competitive/market and UX findings are synthesized inline in §1–§2 above.

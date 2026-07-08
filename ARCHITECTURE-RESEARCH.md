@@ -38,7 +38,9 @@ The field converges on one pattern: **deterministic orchestration + journaled no
 - **AWS Step Functions + Bedrock AgentCore** — managed state machines; fits staged pipelines, awkward for free-form loops; AWS lock-in.
 - **DBOS** — durable execution as a Postgres library; minimal ops; youngest ecosystem.
 
-**Recommendation:** Build the substrate on **Restate** — no versioning tax (users constantly edit workflows), Virtual Objects fit agent sessions natively, first-class idempotency for side-effecting MCP/API calls, low latency, single-binary ops. Compile the visual graph to a **data-driven interpreter** (graph = data, interpreter = stable code) so edits change data, not replayed code. Alternatives: **Temporal** (maturity-first), **Inngest/AgentKit** (TS fast-path), **DBOS** (Postgres-only simplicity). **Do not build durable execution from scratch.**
+**Research lean:** on the technical merits, **Restate** is the closest fit — no versioning tax (users constantly edit workflows), Virtual Objects fit agent sessions natively, first-class idempotency for side-effecting MCP/API calls, low latency, single-binary ops.
+
+**Product decision (see `PLAN.md` §3): Temporal for v1.** Compiling the visual graph to a **data-driven interpreter** (graph = data, interpreter = stable code) means edits change data, not replayed code — which *neutralizes Temporal's determinism-versioning tax*, the one thing that made Restate look decisively better. With the tax removed, we pick on **maturity, ecosystem depth, and battle-tested durable timers for days-long HITL waits → Temporal.** **Restate remains the strong alternative** — revisit if the interpreter proves complex or versioning-ops still bite (its Virtual-Object-per-session maps 1:1 to an agent session). Other alternatives: **Inngest/AgentKit** (TS fast-path), **DBOS** (Postgres-only simplicity). **Do not build durable execution from scratch.**
 
 ---
 
@@ -98,7 +100,7 @@ The field converges on one pattern: **deterministic orchestration + journaled no
 
 **Cost:** source of truth = leaf LLM span tokens × versioned price table; roll up span→agent→run→tenant; wire to hard per-tenant budget/step/rate limits (LLM10 cost-DoS defense).
 
-**Recommendation:** **OTel GenAI wire format + Langfuse (self-hosted) + DeepEval/Promptfoo (CI) + Langfuse online evals + NeMo Guardrails (with Prompt Guard 2 / Llama Guard 4 / Presidio) + custom per-tenant cost/budget service.** Guardrails run as a required, non-bypassable orchestrator step.
+**Recommendation:** **OTel GenAI wire format + Langfuse (self-hosted) + DeepEval/Promptfoo (CI) + Langfuse online evals + NeMo Guardrails (with Prompt Guard 2 / Llama Guard 4 / Presidio) + custom per-tenant cost/budget service.** Guardrails run as a required, non-bypassable orchestrator step. **India-aware PII:** extend Presidio with custom recognizers for **Aadhaar, PAN, UPI IDs, and Indian phone formats** (the platform targets Indian businesses).
 
 ---
 
@@ -118,7 +120,7 @@ Core tension: running untrusted LLM-generated code/tool calls for mutually-distr
 
 **Deployment:** durable execution orchestrator (§2) **decoupled** from an ephemeral managed-sandbox pool; workers on **Kubernetes with KEDA/HPA on queue depth**; tier work by duration (edge isolate → queue+worker → durable workflow). Mistral Workflows validates the pattern (Temporal core + multi-tenancy + AI streaming).
 
-**Recommendation:** managed **E2B or Daytona** sandboxes (Daytona if per-turn cold start dominates; Modal when GPU needed) + egress allow-lists; **Bridge** tenancy (RLS pool + silo tier); **KMS envelope + Vault** with secrets injected to sandbox never LLM; **ReBAC** (Permit.io fast / OpenFGA owned); intersection-permission + scoped agent identity + human-approval gates; durable orchestrator decoupled from sandbox pool on K8s.
+**Recommendation:** managed **E2B or Daytona** sandboxes (Daytona if per-turn cold start dominates; Modal when GPU needed) + egress allow-lists; **Bridge** tenancy (RLS pool + silo tier); **KMS envelope + Vault** with secrets injected to sandbox never LLM; **ReBAC** (Permit.io fast / OpenFGA owned); intersection-permission + scoped agent identity + human-approval gates; durable orchestrator decoupled from sandbox pool on K8s. **India data-residency (DPDP Act 2023):** region-pin standard tenants to an India region; the silo tier provides dedicated in-region DB/VPC/keys for regulated customers.
 
 ---
 
@@ -135,10 +137,11 @@ Core tension: running untrusted LLM-generated code/tool calls for mutually-distr
 │  L2  CONTROL PLANE — compile canvas → data-driven graph spec               │
 │      Versioning · eval-gate before publish · ReBAC (users + agent scopes)  │
 ├──────────────────────────────────────────────────────────────────────────┤
-│  L3  DURABLE EXECUTION SUBSTRATE — Restate (or Temporal)                   │
-│      Graph interpreter (graph=data). Virtual Object per agent session.     │
-│      Journaled LLM/MCP/API steps · idempotency keys · retries/backoff ·    │
-│      HITL awakeables (days-long) · global per-run retry/token budget       │
+│  L3  DURABLE EXECUTION SUBSTRATE — Temporal for v1 (Restate alternative)   │
+│      Graph interpreter (graph=data). One durable workflow per agent        │
+│      session (Restate: Virtual Object per session). Journaled LLM/MCP/API  │
+│      steps · idempotency keys · retries/backoff · durable-timer HITL       │
+│      waits (days-long) · global per-run retry/token budget                 │
 ├──────────────────────────────────────────────────────────────────────────┤
 │  L4  AGENT RUNTIME & MODEL LAYER                                           │
 │      Model gateway (LiteLLM→Portkey) · auto prompt-caching · context       │
